@@ -80,6 +80,11 @@
         .generate-btn:hover {
             background: #45a049;
         }
+
+        .message {
+            font-weight: bold;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -88,31 +93,51 @@
         <h1>Gerador Mega-Sena</h1>
         <div class="numbers" id="numbers"></div>
         <button class="generate-btn" onclick="generateNumbers()">Gerar Números</button>
+        <p id="message" class="message"></p>
     </div>
 
     <script>
         let clickCount = 0;
 
+        // Carregar sequências existentes do LocalStorage
+        const storedSequences = new Set(JSON.parse(localStorage.getItem('sequences') || '[]'));
+
         function generateNumbers() {
             const numbersContainer = document.getElementById("numbers");
             const counter = document.getElementById("counter");
+            const message = document.getElementById("message");
 
             // Incrementa o contador de cliques
             clickCount++;
-            counter.textContent = `Cliques: ${clickCount}`;
+            counter.textContent = `Números Gerados: ${clickCount}`;
 
-
+            // Limpa os números anteriores
             numbersContainer.innerHTML = "";
-            const numbers = new Set();
+            message.textContent = "";
 
             // Gera 8 números únicos
+            const numbers = new Set();
             while (numbers.size < 8) {
                 const randomNumber = Math.floor(Math.random() * 60) + 1;
                 numbers.add(randomNumber);
             }
+            const numberArray = Array.from(numbers).sort((a, b) => a - b);
+            const sequence = numberArray.join(',');
+
+            // Verifica se a sequência já existe
+            if (storedSequences.has(sequence)) {
+                message.textContent = "Essa sequência já foi gerada!";
+                message.style.color = "red";
+            } else {
+                // Adiciona a nova sequência ao LocalStorage
+                storedSequences.add(sequence);
+                localStorage.setItem('sequences', JSON.stringify([...storedSequences]));
+                message.textContent = "Sequência salva com sucesso!";
+                message.style.color = "green";
+            }
 
             // Exibe os números na tela
-            Array.from(numbers).forEach(number => {
+            numberArray.forEach(number => {
                 const numberElement = document.createElement("div");
                 numberElement.className = "number";
                 numberElement.textContent = number;
