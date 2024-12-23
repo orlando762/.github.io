@@ -18,6 +18,19 @@
             color: #333;
         }
 
+        .counter {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #4caf50;
+            color: white;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
         h1 {
             color: #4caf50;
         }
@@ -70,6 +83,7 @@
     </style>
 </head>
 <body>
+    <div class="counter" id="counter">Cliques: 0</div>
     <div class="container">
         <h1>Gerador Mega-Sena</h1>
         <div class="numbers" id="numbers"></div>
@@ -77,16 +91,27 @@
     </div>
 
     <script>
+        let clickCount = 0;
+
         function generateNumbers() {
             const numbersContainer = document.getElementById("numbers");
-            numbersContainer.innerHTML = ""; // Limpa os números anteriores
+            const counter = document.getElementById("counter");
+
+            // Incrementa o contador de cliques
+            clickCount++;
+            counter.textContent = `Cliques: ${clickCount}`;
+
+
+            numbersContainer.innerHTML = "";
             const numbers = new Set();
 
+            // Gera 8 números únicos
             while (numbers.size < 8) {
                 const randomNumber = Math.floor(Math.random() * 60) + 1;
                 numbers.add(randomNumber);
             }
 
+            // Exibe os números na tela
             Array.from(numbers).forEach(number => {
                 const numberElement = document.createElement("div");
                 numberElement.className = "number";
